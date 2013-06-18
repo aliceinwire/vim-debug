@@ -106,15 +106,18 @@ class Debugger:
         else:
             return self.start()
         # TODO: allow custom browsers
-        print 'trying chrome, firefox'
+        print 'trying chrome, firefox, chromium'
         try:
             subprocess.Popen(('google-chrome', url), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
             try:
                 subprocess.Popen(('firefox', url), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             except OSError:
-                print 'neither chrome nor firefox were found. failed to start debug session.'
-                return
+                try:
+                    subprocess.Popen(('chromium', url), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                except OSError:
+                    print 'neither chrome nor firefox were found. failed to start debug session.'
+                    return
         return self.start()
 
     def start_py(self, fname):
